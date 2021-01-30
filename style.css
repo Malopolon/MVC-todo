@@ -1,0 +1,13 @@
+
+.item_wrapp {
+    margin: 1rem 0 1rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    width: 28%;
+}
+.item {
+    display: inline-block;
+}
+.remove {
+    display: inline-block;
+}
