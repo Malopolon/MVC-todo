@@ -51,15 +51,56 @@ class ViewList {
       const itemTask = document.createElement("div");
         itemTask.classList.add('item');
         itemTask.innerHTML = element;
+      const changeItem = document.createElement('button');
+        changeItem.textContent = 'Edit';
+        changeItem.addEventListener('click', () => this.changeTask(element,itemWrapp,itemTask,changeItem));
       const itemRemove = document.createElement("button");
         itemRemove.textContent = 'X';
         itemRemove.classList.add('remove');
         itemRemove.addEventListener('click', () => itemWrapp.remove());
         itemRemove.addEventListener('click', () => this.model.removeTask(element));
-      itemWrapp.append(itemTask, itemRemove);
+      itemWrapp.append(itemTask, changeItem, itemRemove);
       this.taskList.append(itemWrapp);
     });
   }
+
+  reloadlist() {
+    this.mainBlock.append(this.listWrapp);
+    this.taskList.innerHTML = '';
+    this.listWrapp.append(this.backButton, this.taskList);
+  
+      let returnTasks = JSON.parse(localStorage.getItem('tasks'));
+      returnTasks.forEach(element => {
+          let itemWrapp = document.createElement('div')
+          itemWrapp.classList.add('item_wrapp');
+        const itemTask = document.createElement("div");
+          itemTask.classList.add('item');
+          itemTask.innerHTML = element;
+        const changeItem = document.createElement('button');
+          changeItem.textContent = 'Edit';
+          changeItem.addEventListener('click', () => this.changeTask(element,itemWrapp,itemTask,changeItem));
+        const itemRemove = document.createElement("button");
+          itemRemove.textContent = 'X';
+          itemRemove.classList.add('remove');
+          itemRemove.addEventListener('click', () => itemWrapp.remove());
+          itemRemove.addEventListener('click', () => this.model.removeTask(element));
+        itemWrapp.append(itemTask, changeItem, itemRemove);
+        this.taskList.append(itemWrapp);
+      });
+  }
+
+  changeTask(element, itemWrapp, itemTask, changeItem) {
+      let textArea = document.createElement('input');
+      let confirmEdit = document.createElement('button');
+          confirmEdit.addEventListener('click', () => this.model.changeValue(element, textArea.value));
+          confirmEdit.addEventListener('click', () => this.reloadlist());
+        confirmEdit.textContent ='Confirm';
+
+      textArea.value = element;    
+      itemWrapp.replaceChild(confirmEdit, changeItem);
+      itemWrapp.replaceChild(textArea, itemTask);
+  }
+  
 }
 
 class Controller {
@@ -93,6 +134,13 @@ class Model {
     tasks.splice(tasks.indexOf(value),1);
     toLocal();
     console.log(tasks);
+  }
+
+  changeValue(element, value) {
+    tasks= JSON.parse(localStorage.getItem('tasks'));
+    tasks[tasks.indexOf(element)] = value;
+    toLocal();
+    console.log(value);
   }
 }
 
